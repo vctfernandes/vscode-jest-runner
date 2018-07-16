@@ -74,7 +74,14 @@ export function activate(context: vscode.ExtensionContext) {
       name: 'Debug Jest Tests',
       program: getJestPath(),
       request: 'launch',
-      type: 'node'
+      env: {
+          'NODE_PATH': '.'
+      },
+      type: 'node',
+      skipFiles: [
+          "${workspaceFolder}/node_modules/**/*.js",
+          "<node_internals>/**/*.js"
+      ]
     };
 
     config.args.push('-i');
@@ -84,6 +91,8 @@ export function activate(context: vscode.ExtensionContext) {
     }
     config.args.push('-t');
     config.args.push(testName);
+    config.args.push('--testPathPattern');
+    config.args.push(vscode.window.activeTextEditor.document.fileName);
 
     await editor.document.save();
 
